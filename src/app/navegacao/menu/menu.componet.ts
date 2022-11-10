@@ -4,4 +4,10 @@ import { Component } from '@angular/core';
   selector: 'app-menu',
   templateUrl: './menu.componet.html'
 })
-export class MenuComponent {}
+export class MenuComponent {
+  public isCollapsed: boolean;
+
+  constructor(){
+    this.isCollapsed = true;
+  }
+}

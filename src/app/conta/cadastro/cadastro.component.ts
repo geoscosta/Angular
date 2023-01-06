@@ -1,10 +1,12 @@
-import { ValidationMessages, GenericValidator, DisplayMessage } from './../../utils/generic-form-validation';
-import { ContaService } from './../services/conta.service';
-import { Usuario } from './../models/usuario';
-import { FormBuilder, FormControl, FormControlName, FormGroup, Validators } from '@angular/forms';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
-import { CustomValidators } from 'ng2-validation'
+import { FormBuilder, FormControl, FormControlName, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { CustomValidators } from 'ng2-validation';
 import { fromEvent, merge, Observable } from 'rxjs';
+
+import { DisplayMessage, GenericValidator, ValidationMessages } from './../../utils/generic-form-validation';
+import { Usuario } from './../models/usuario';
+import { ContaService } from './../services/conta.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -23,7 +25,9 @@ export class CadastroComponent implements OnInit, AfterViewInit {
   displayMessage: DisplayMessage = {};
 
   constructor(private fb: FormBuilder,
-              private contaService: ContaService) {
+              private contaService: ContaService,
+              private router: Router
+              ) {
 
                 this.validationMessages = {
                   email: {
@@ -70,7 +74,23 @@ export class CadastroComponent implements OnInit, AfterViewInit {
     if (this.cadastroForm.dirty && this.cadastroForm.valid) {
       this.usuario = Object.assign({}, this.usuario, this.cadastroForm.value);
 
-      this.contaService.cadastrarUsuário(this.usuario);
+      this.contaService.cadastrarUsuário(this.usuario)
+      .subscribe(
+        sucesso => {this.processarSucesso(sucesso)},
+        falha => {this.processarFalha(falha)}
+      );
     }
+  }
+
+  processarSucesso(response: any){
+    this.cadastroForm.reset();
+    this.errors = [];
+
+    this.contaService.LocalStorage.salvarDadosLocaisUsuario(response);
+    this.router.navigate(['/home']);
+  }
+
+  processarFalha(fail: any) {
+    this.errors = fail.error.errors;
   }
 }

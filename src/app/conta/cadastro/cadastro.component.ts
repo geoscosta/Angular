@@ -91,8 +91,12 @@ export class CadastroComponent implements OnInit, AfterViewInit {
 
     this.contaService.LocalStorage.salvarDadosLocaisUsuario(response);
 
-    this.toastr.success('Registro realizado com sucesso!', 'Bem vindo !!!')
-    //this.router.navigate(['/home']);
+    let toast = this.toastr.success('Registro realizado com sucesso!', 'Bem vindo !!!');
+    if(toast) {
+      toast.onHidden.subscribe(() => {
+        this.router.navigate(['/home']);
+      })
+    }
   }
 
   processarFalha(fail: any) {

@@ -19,7 +19,13 @@ import { NavegacaoModule } from './navegacao/navegacao.module';
     NavegacaoModule,
     NgbModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot({
+      closeButton: true,
+      preventDuplicates: true,
+      timeOut: 3000,
+      progressBar: true,
+      progressAnimation: 'decreasing',
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

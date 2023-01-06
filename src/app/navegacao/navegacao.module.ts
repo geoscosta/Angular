@@ -5,6 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FooterComponent } from './footer/footer.componet';
 import { HomeComponent } from './home/home.componet';
+import { MenuLoginComponent } from './menu-login/menu-login.component';
 import { MenuComponent } from './menu/menu.componet';
 import { NotFoundComponent } from './not-found/not-found.componet';
 
@@ -15,7 +16,8 @@ import { NotFoundComponent } from './not-found/not-found.componet';
     MenuComponent,
     HomeComponent,
     FooterComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    MenuLoginComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { NotFoundComponent } from './not-found/not-found.componet';
     MenuComponent,
     HomeComponent,
     FooterComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    MenuLoginComponent
   ]
 })
 export class NavegacaoModule { }

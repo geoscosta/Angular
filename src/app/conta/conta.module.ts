@@ -11,6 +11,7 @@ import { ContaRoutingModule } from './conta.route';
 import { LoginComponent } from './login/login.component';
 
 import { CustomFormsModule } from 'ng2-validation'
+import { ContaGuard } from './services/conta.guard';
 
 
 
@@ -30,7 +31,8 @@ import { CustomFormsModule } from 'ng2-validation'
     CustomFormsModule
   ],
   providers: [
-    ContaService
+    ContaService,
+    ContaGuard
   ]
 })
 export class ContaModule { }

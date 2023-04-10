@@ -9,9 +9,9 @@ export class ContaService extends BaseService {
 
   constructor(private http: HttpClient){ super() }
 
-  cadastrarUsuário(usuario: Usuario) : Observable<Usuario>{
+  cadastrarUsuário(usuario: Usuario) : Observable<Usuario> {
     let response = this.http
-        .post(this.UrlServiceV1 + 'nova-conta', usuario)
+        .post(this.UrlServiceV1 + 'nova-conta', usuario, this.ObterHeaderJson())
         .pipe(
           map(this.ExtractData),
           catchError(this.serviceError)
@@ -20,7 +20,14 @@ export class ContaService extends BaseService {
     return response;
   }
 
-  login(usuario: Usuario){
+  login(usuario: Usuario) : Observable<Usuario> {
+    let response = this.http
+        .post(this.UrlServiceV1 + 'entrar', usuario, this.ObterHeaderJson())
+        .pipe(
+          map(this.ExtractData),
+          catchError(this.serviceError)
+        );
 
+    return response;
   }
 }

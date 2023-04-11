@@ -25,6 +25,7 @@ export class NovoComponent implements OnInit {
   validationMessages: ValidationMessages;
   genericValidator: GenericValidator;
   displayMessage: DisplayMessage = {};
+  textoDocumento: string = "CPF (requerido)";
 
   formResult: string = '';
 
@@ -71,18 +72,57 @@ export class NovoComponent implements OnInit {
       nome: ['', [Validators.required]],
       documento: ['', [Validators.required]],
       ativo: ['', [Validators.required]],
-      tipoFornecedor: ['', [Validators.required]]     
+      tipoFornecedor: ['', [Validators.required]],
+
+      endereco: this.fb.group({
+        logradouro: ['', [Validators.required]],
+        numero: ['', [Validators.required]],
+        complemento: [''],
+        bairro: ['', [Validators.required]],
+        cep: ['', [Validators.required]],
+        cidade: ['', [Validators.required]],
+        estado: ['', [Validators.required]]
+      })
     });
+
+    this.fornecedorForm.patchValue({ tipoFornecedor: '1', ativo: true});
   }
 
   ngAfterViewInit(): void {
+    this.configurarElementosValidacao();
+  }
+
+  configurarElementosValidacao() {
     let controlBlurs: Observable<any>[] = this.formInputElements
       .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
 
     merge(...controlBlurs).subscribe(() => {
-      this.displayMessage = this.genericValidator.processarMensagens(this.fornecedorForm);
-      this.mudancasNaoSalvas = true;
+      this.validarFormulário();
     });
+  }
+
+  // trocarValidacaoDocumento() {
+
+  //   if(this.tipoFornecedorForm().value === "1") {
+  //     this.documento().clearValidators();
+  //     this.documento().setValidators([Validators.required,]);
+  //   }
+  //   else {
+
+  //   }
+  // }
+
+  tipoFornecedorForm(): AbstractControl {
+    return this.fornecedorForm.get('tipoFornecedor');
+  }
+
+  documento(): AbstractControl {
+    return this.fornecedorForm.get('documento');
+  }
+
+  validarFormulário() {
+    this.displayMessage = this.genericValidator.processarMensagens(this.fornecedorForm);
+      this.mudancasNaoSalvas = true;
   }
 
    adicionarFornecedor() {

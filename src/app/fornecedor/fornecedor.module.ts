@@ -11,6 +11,7 @@ import { EditarComponent } from './editar/editar.component';
 import { ExcluirComponent } from './excluir/excluir.component';
 import { DetalhesComponent } from './detalhes/detalhes.component';
 import { HttpClientModule } from '@angular/common/http';
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
 @NgModule({
   declarations: [
@@ -27,9 +28,12 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NgxMaskDirective,
+    NgxMaskPipe
   ],
   providers: [
-    FornecedorService
+    FornecedorService,
+    provideNgxMask()
   ]
 })
 export class FornecedorModule { }

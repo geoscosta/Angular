@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewChildren, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControlName, AbstractControl } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
-import { Observable, fromEvent, merge } from 'rxjs';
-
 import { ToastrService } from 'ngx-toastr';
+import { fromEvent, merge, Observable } from 'rxjs';
+import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
 
-import { ValidationMessages, GenericValidator, DisplayMessage } from 'src/app/utils/generic-form-validation';
 import { Fornecedor } from '../models/fornecedor';
 import { FornecedorService } from '../services/fornecedor.service';
+import { StringUtils } from './../../utils/string-utils';
+import { CepConsulta } from './../models/endereco';
 
 @Component({
   selector: 'app-novo',
@@ -26,6 +26,7 @@ export class NovoComponent implements OnInit {
   genericValidator: GenericValidator;
   displayMessage: DisplayMessage = {};
   textoDocumento: string = "CPF (requerido)";
+  cep: string;
 
   formResult: string = '';
 
@@ -101,6 +102,11 @@ export class NovoComponent implements OnInit {
     });
   }
 
+  validarFormulário() {
+    this.displayMessage = this.genericValidator.processarMensagens(this.fornecedorForm);
+      this.mudancasNaoSalvas = true;
+  }
+
   // trocarValidacaoDocumento() {
 
   //   if(this.tipoFornecedorForm().value === "1") {
@@ -120,15 +126,38 @@ export class NovoComponent implements OnInit {
     return this.fornecedorForm.get('documento');
   }
 
-  validarFormulário() {
-    this.displayMessage = this.genericValidator.processarMensagens(this.fornecedorForm);
-      this.mudancasNaoSalvas = true;
+
+  buscarCep() {
+
+    this.cep = StringUtils.somenteNumeros(this.cep);
+    if(this.cep.length < 8) return;
+
+    this.fornecedorService.consultaCep(this.cep)
+      .subscribe(
+        cepRetorno => this.preencherEnderecoConsulta(cepRetorno),
+        erro => this.errors.push(erro)
+      );
+  }
+
+  preencherEnderecoConsulta(cepConsulta: CepConsulta) {
+    this.fornecedorForm.patchValue({
+      endereco: {
+        cep: cepConsulta.cep,
+        logradouro: cepConsulta.logradouro,
+        complemento: cepConsulta.complemento,
+        bairro: cepConsulta.bairro,
+        cidade: cepConsulta.localidade,
+        estado: cepConsulta.uf,
+      }
+    });
   }
 
    adicionarFornecedor() {
     if (this.fornecedorForm.dirty && this.fornecedorForm.valid) {
       this.fornecedor = Object.assign({}, this.fornecedor, this.fornecedorForm.value);
       this.formResult = JSON.stringify(this.fornecedor);
+
+      this.fornecedor.endereco.cep = StringUtils.somenteNumeros(this.fornecedor.endereco.cep);
 
       this.fornecedorService.novoFornecedor(this.fornecedor)
         .subscribe(

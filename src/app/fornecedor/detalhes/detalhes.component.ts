@@ -6,17 +6,12 @@ import { FornecedorService } from '../services/fornecedor.service';
 
 @Component({
   selector: 'app-detalhes',
-  templateUrl: './detalhes.component.html'
+  templateUrl: './detalhes.component.html',
 })
 export class DetalhesComponent {
-
   fornecedor: Fornecedor = new Fornecedor();
 
-  constructor(
-    private route: ActivatedRoute,
-    private fornecedorService: FornecedorService) {
-
-      this.fornecedorService.obterPorId(route.params['id'])
-      .subscribe(fornecedor => this.fornecedor = fornecedor);
+  constructor(private route: ActivatedRoute) {
+    this.fornecedor = this.route.snapshot.data['fornecedor'];
   }
 }

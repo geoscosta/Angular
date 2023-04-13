@@ -7,33 +7,36 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-excluir',
-  templateUrl: './excluir.component.html'
+  templateUrl: './excluir.component.html',
 })
 export class ExcluirComponent {
-
   fornecedor: Fornecedor = new Fornecedor();
 
   constructor(
     private fornecedorService: FornecedorService,
     private route: ActivatedRoute,
     private router: Router,
-    private toastr: ToastrService) {
-
-    this.fornecedorService.obterPorId(route.params['id'])
-      .subscribe(fornecedor => this.fornecedor = fornecedor);
+    private toastr: ToastrService
+  ) {
+    this.fornecedor = this.route.snapshot.data['fornecedor'];
   }
 
   excluirEvento() {
-    this.fornecedorService.excluirFornecedor(this.fornecedor.id)
-      .subscribe(
-        evento => { this.sucessoExclusao(evento) },
-        error => { this.falha() }
-      );
+    this.fornecedorService.excluirFornecedor(this.fornecedor.id).subscribe(
+      (evento) => {
+        this.sucessoExclusao(evento);
+      },
+      (error) => {
+        this.falha();
+      }
+    );
   }
 
   sucessoExclusao(evento: any) {
-
-    const toast = this.toastr.success('Fornecedor excluido com Sucesso!', 'Good bye :D');
+    const toast = this.toastr.success(
+      'Fornecedor excluido com Sucesso!',
+      'Good bye :D'
+    );
     if (toast) {
       toast.onHidden.subscribe(() => {
         this.router.navigate(['/fornecedores/listar-todos']);

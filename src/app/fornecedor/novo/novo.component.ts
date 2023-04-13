@@ -91,6 +91,7 @@ export class NovoComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.configurarElementosValidacao();
+    this.validarFormulário();
   }
 
   configurarElementosValidacao() {
@@ -132,7 +133,7 @@ export class NovoComponent implements OnInit {
     this.cep = StringUtils.somenteNumeros(this.cep);
     if(this.cep.length < 8) return;
 
-    this.fornecedorService.consultaCep(this.cep)
+    this.fornecedorService.consultarCep(this.cep)
       .subscribe(
         cepRetorno => this.preencherEnderecoConsulta(cepRetorno),
         erro => this.errors.push(erro)

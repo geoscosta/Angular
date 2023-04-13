@@ -16,6 +16,8 @@ a.navbar-brand {
   overflow: hidden;
 }
 
+.modal-backdrop.fade.show { z-index: 1050 !important; }
+
 
 /* Sticky footer styles
 -------------------------------------------------- */

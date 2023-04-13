@@ -126,8 +126,8 @@
                               {{ fornecedor.endereco.estado }}
                           </td>
                           <td>
-                              <a class="btn btn-info">
-                                  <span title="Editar" class="fa fa-pencil-alt"></span>
+                              <a class="btn btn-info" href="javascript:void(0)" (click)="abrirModal(content)">
+                                  <span title="Editar" class="fa fa-pencil-alt">Editar</span>
                               </a>
                           </td>
                       </tr>
@@ -145,7 +145,7 @@
             </button>
       </div>
 
-      <form [formGroup]="enderecoForm">
+      <form (ngSubmit)="editarEndereco()" [formGroup]="enderecoForm">
           <div class="modal-body">
 
               <div class="alert alert-danger" *ngIf="errorsEndereco.length > 0">

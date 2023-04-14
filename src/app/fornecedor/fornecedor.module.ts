@@ -13,6 +13,7 @@ import { DetalhesComponent } from './detalhes/detalhes.component';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { FornecedorResolve } from './services/fornecedor.resolve';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { FornececedorGuard } from './services/fornecedor.guard';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
   providers: [
     FornecedorService,
     FornecedorResolve,
+    FornececedorGuard,
     provideNgxMask()
   ]
 })

@@ -14,6 +14,7 @@ import { DetalhesComponent } from './detalhes/detalhes.component';
 import { ProdutoService } from './services/produto.service';
 import { ProdutoResolve } from './services/produto.resolve';
 import { ProdutoGuard } from './services/produto.guard';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ProdutoGuard } from './services/produto.guard';
     ProdutoRoutingModule,
     NgxSpinnerModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ImageCropperModule
   ],
   providers: [
     ProdutoService,

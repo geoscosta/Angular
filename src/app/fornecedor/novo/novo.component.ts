@@ -90,8 +90,13 @@ export class NovoComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.tipoFornecedorForm().valueChanges
+      .subscribe(() => {
+        this.configurarElementosValidacao();
+        this.validarFormulario();
+      });
+
     this.configurarElementosValidacao();
-    this.validarFormulário();
   }
 
   configurarElementosValidacao() {
@@ -99,11 +104,11 @@ export class NovoComponent implements OnInit {
       .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
 
     merge(...controlBlurs).subscribe(() => {
-      this.validarFormulário();
+      this.validarFormulario();
     });
   }
 
-  validarFormulário() {
+  validarFormulario() {
     this.displayMessage = this.genericValidator.processarMensagens(this.fornecedorForm);
       this.mudancasNaoSalvas = true;
   }
@@ -165,14 +170,14 @@ export class NovoComponent implements OnInit {
           sucesso => { this.processarSucesso(sucesso) },
           falha => { this.processarFalha(falha) }
         );
-
-      this.mudancasNaoSalvas = false;
     }
   }
 
   processarSucesso(response: any) {
     this.fornecedorForm.reset();
     this.errors = [];
+
+    this.mudancasNaoSalvas = false;
 
     let toast = this.toastr.success('Fornecedor cadastrado com sucesso!', 'Sucesso!');
     if (toast) {

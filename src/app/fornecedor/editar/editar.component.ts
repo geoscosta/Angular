@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { fromEvent, merge, Observable } from 'rxjs';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
@@ -42,7 +43,8 @@ export class EditarComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private modalService: NgbModal) {
+    private modalService: NgbModal,
+    private spinner: NgxSpinnerService ) {
 
     this.validationMessages = {
       nome: {
@@ -79,6 +81,8 @@ export class EditarComponent implements OnInit {
 
   ngOnInit() {
 
+    this.spinner.show();
+
     this.fornecedorForm = this.fb.group({
       id: '',
       nome: ['', [Validators.required]],
@@ -100,6 +104,12 @@ export class EditarComponent implements OnInit {
     });
 
     this.preencherForm();
+
+    setTimeout(() => {
+      /** spinner ends after 1 seconds */
+      this.spinner.hide();
+    }, 1000);
+
   }
 
   preencherForm() {

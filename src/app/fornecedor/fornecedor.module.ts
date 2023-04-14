@@ -13,6 +13,7 @@ import { DetalhesComponent } from './detalhes/detalhes.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { FornecedorResolve } from './services/fornecedor.resolve';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { FornecedorResolve } from './services/fornecedor.resolve';
     ReactiveFormsModule,
     HttpClientModule,
     NgxMaskDirective,
-    NgxMaskPipe
+    NgxMaskPipe,
+    NgxSpinnerModule
   ],
   providers: [
     FornecedorService,

@@ -13,14 +13,14 @@ export class FornececedorGuard implements CanActivate, CanDeactivate<NovoCompone
     canDeactivate(component: NovoComponent) {
         if(component.mudancasNaoSalvas) {
             return window.confirm('Tem certeza que deseja abandonar o preenchimento do formulario?');
-        }        
+        }
         return true
     }
 
     canActivate(routeAc: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
         if (!this.localStorageUtils.obterTokenUsuario()) {
-            this.router.navigate(['/conta/login']);
+            this.router.navigate(['/conta/login'], {queryParams: { returnUrl: this.router.url}});
         }
 
         let user = this.localStorageUtils.obterUsuario();

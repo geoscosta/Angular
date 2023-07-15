@@ -1,42 +1,26 @@
 import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControlName, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { fromEvent, merge, Observable } from 'rxjs';
-import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
 import { StringUtils } from 'src/app/utils/string-utils';
 
 import { CepConsulta, Endereco } from '../models/endereco';
-import { Fornecedor } from '../models/fornecedor';
 import { FornecedorService } from '../services/fornecedor.service';
+import { FornecedorBaseComponent } from '../fornecedor-form.base.componet';
 
 @Component({
   selector: 'app-editar',
   templateUrl: './editar.component.html'
 })
-export class EditarComponent implements OnInit {
+export class EditarComponent extends FornecedorBaseComponent implements OnInit {
 
   @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
 
-  errors: any[] = [];
-  errorsEndereco: any[] = [];
-  fornecedorForm: FormGroup;
-  enderecoForm: FormGroup;
-
-  fornecedor: Fornecedor = new Fornecedor();
-  endereco: Endereco = new Endereco();
-
-  validationMessages: ValidationMessages;
-  genericValidator: GenericValidator;
-  displayMessage: DisplayMessage = {};
   textoDocumento: string = '';
-
   tipoFornecedor: number;
   formResult: string = '';
-
-  mudancasNaoSalvas: boolean;
 
   constructor(private fb: FormBuilder,
     private fornecedorService: FornecedorService,
@@ -46,34 +30,7 @@ export class EditarComponent implements OnInit {
     private modalService: NgbModal,
     private spinner: NgxSpinnerService ) {
 
-    this.validationMessages = {
-      nome: {
-        required: 'Informe o Nome',
-      },
-      documento: {
-        required: 'Informe o Documento'
-      },
-      logradouro: {
-        required: 'Informe o Logradouro',
-      },
-      numero: {
-        required: 'Informe o Número',
-      },
-      bairro: {
-        required: 'Informe o Bairro',
-      },
-      cep: {
-        required: 'Informe o CEP'
-      },
-      cidade: {
-        required: 'Informe a Cidade',
-      },
-      estado: {
-        required: 'Informe o Estado',
-      }
-    };
-
-    this.genericValidator = new GenericValidator(this.validationMessages);
+    super();
 
     this.fornecedor = this.route.snapshot.data['fornecedor'];
     this.tipoFornecedor = this.fornecedor.tipoFornecedor;
@@ -136,20 +93,11 @@ export class EditarComponent implements OnInit {
 
   ngAfterViewInit() {
     this.tipoFornecedorForm().valueChanges.subscribe(() => {
-      this.configurarElementosValidacao();
-      this.validarFormulario();
+      super.configurarValidacaoFormulario(this.formInputElements)
+      super.validarFormulario(this.fornecedorForm);
     });
 
-    this.configurarElementosValidacao();
-  }
-
-  configurarElementosValidacao() {
-    let controlBlurs: Observable<any>[] = this.formInputElements
-      .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
-
-    merge(...controlBlurs).subscribe(() => {
-      this.validarFormulario();
-    });
+    super.configurarValidacaoFormulario(this.formInputElements)
   }
 
   documento(): AbstractControl {
@@ -158,10 +106,6 @@ export class EditarComponent implements OnInit {
 
   tipoFornecedorForm(): AbstractControl {
     return this.fornecedorForm.get('tipoFornecedor');
-  }
-
-  validarFormulario() {
-    this.displayMessage = this.genericValidator.processarMensagens(this.fornecedorForm);
   }
 
   buscarCep(cep: string) {

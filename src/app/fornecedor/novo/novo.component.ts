@@ -1,71 +1,28 @@
 import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControlName, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { fromEvent, merge, Observable } from 'rxjs';
-import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
 
-import { Fornecedor } from '../models/fornecedor';
 import { FornecedorService } from '../services/fornecedor.service';
 import { StringUtils } from './../../utils/string-utils';
 import { CepConsulta } from './../models/endereco';
+import { FornecedorBaseComponent } from '../fornecedor-form.base.componet';
 
 @Component({
   selector: 'app-novo',
   templateUrl: './novo.component.html'
 })
-export class NovoComponent implements OnInit {
+export class NovoComponent extends FornecedorBaseComponent implements OnInit {
 
   @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
 
-  errors: any[] = [];
-  fornecedorForm: FormGroup;
-  fornecedor: Fornecedor = new Fornecedor();
-
-  validationMessages: ValidationMessages;
-  genericValidator: GenericValidator;
-  displayMessage: DisplayMessage = {};
   textoDocumento: string = "CPF (requerido)";
   cep: string;
-
-  formResult: string = '';
-
-  mudancasNaoSalvas: boolean;
 
   constructor(private fb: FormBuilder,
     private fornecedorService: FornecedorService,
     private router: Router,
-    private toastr: ToastrService) {
-
-    this.validationMessages = {
-      nome: {
-        required: 'Informe o Nome',
-      },
-      documento: {
-        required: 'Informe o Documento',
-      },
-      logradouro: {
-        required: 'Informe o Logradouro',
-      },
-      numero: {
-        required: 'Informe o Número',
-      },
-      bairro: {
-        required: 'Informe o Bairro',
-      },
-      cep: {
-        required: 'Informe o CEP'
-      },
-      cidade: {
-        required: 'Informe a Cidade',
-      },
-      estado: {
-        required: 'Informe o Estado',
-      }
-    };
-
-    this.genericValidator = new GenericValidator(this.validationMessages);
-  }
+    private toastr: ToastrService) { super(); }
 
   ngOnInit() {
 
@@ -92,25 +49,11 @@ export class NovoComponent implements OnInit {
   ngAfterViewInit(): void {
     this.tipoFornecedorForm().valueChanges
       .subscribe(() => {
-        this.configurarElementosValidacao();
-        this.validarFormulario();
+        super.configurarValidacaoFormulario(this.formInputElements)
+        super.validarFormulario(this.fornecedorForm);
       });
 
-    this.configurarElementosValidacao();
-  }
-
-  configurarElementosValidacao() {
-    let controlBlurs: Observable<any>[] = this.formInputElements
-      .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
-
-    merge(...controlBlurs).subscribe(() => {
-      this.validarFormulario();
-    });
-  }
-
-  validarFormulario() {
-    this.displayMessage = this.genericValidator.processarMensagens(this.fornecedorForm);
-      this.mudancasNaoSalvas = true;
+      super.configurarValidacaoFormulario(this.formInputElements)
   }
 
   // trocarValidacaoDocumento() {
@@ -131,7 +74,6 @@ export class NovoComponent implements OnInit {
   documento(): AbstractControl {
     return this.fornecedorForm.get('documento');
   }
-
 
   buscarCep() {
 
@@ -161,7 +103,6 @@ export class NovoComponent implements OnInit {
    adicionarFornecedor() {
     if (this.fornecedorForm.dirty && this.fornecedorForm.valid) {
       this.fornecedor = Object.assign({}, this.fornecedor, this.fornecedorForm.value);
-      this.formResult = JSON.stringify(this.fornecedor);
 
       this.fornecedor.endereco.cep = StringUtils.somenteNumeros(this.fornecedor.endereco.cep);
 

@@ -1,20 +1,19 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
-import { FormBuilder, FormControl, FormControlName, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
+import { FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CustomValidators } from 'ng2-validation';
-import { fromEvent, merge, Observable } from 'rxjs';
 
-import { DisplayMessage, GenericValidator, ValidationMessages } from './../../utils/generic-form-validation';
 import { Usuario } from './../models/usuario';
 import { ContaService } from './../services/conta.service';
 
 import { ToastrService } from 'ngx-toastr';
+import { FormBaseComponent } from 'src/app/base-components/form-base.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent extends FormBaseComponent implements OnInit {
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements: ElementRef[];
 
@@ -22,16 +21,17 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   usuario: Usuario;
 
-  validationMessages: ValidationMessages;
-  genericValidator: GenericValidator;
-  displayMessage: DisplayMessage = {};
+  returnUrl: string;
 
   constructor(
     private fb: FormBuilder,
     private contaService: ContaService,
     private router: Router,
+    private route: ActivatedRoute,
     private toastr: ToastrService
   ) {
+    super();
+
     this.validationMessages = {
       email: {
         required: 'Informe o e-mail',
@@ -43,7 +43,8 @@ export class LoginComponent implements OnInit {
       },
     };
 
-    this.genericValidator = new GenericValidator(this.validationMessages);
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    super.configurarMensagensValidacaoBase(this.validationMessages);
   }
 
   ngOnInit(): void {
@@ -55,15 +56,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    let controlBlurs: Observable<any>[] = this.formInputElements.map(
-      (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur')
-    );
-
-    merge(...controlBlurs).subscribe(() => {
-      this.displayMessage = this.genericValidator.processarMensagens(
-        this.loginForm
-      );
-    });
+   super.configurarValidacaoFormularioBase(this.formInputElements, this.loginForm)
   }
 
   login() {
@@ -93,7 +86,9 @@ export class LoginComponent implements OnInit {
     );
     if (toast) {
       toast.onHidden.subscribe(() => {
-        this.router.navigate(['/home']);
+        this.returnUrl
+        ? this.router.navigate([this.returnUrl])
+        : this.router.navigate(['/home']);
       });
     }
   }

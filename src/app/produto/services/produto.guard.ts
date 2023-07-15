@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, CanDeactivate, Router } from '@angular/router';
-import { BaseGuard } from 'src/app/services/base.guard';
+import { CanDeactivate, Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
+
 
 import { NovoComponent } from '../novo/novo.component';
+import { BaseGuard } from 'src/app/services/base.guard';
 
 @Injectable()
-export class FornececedorGuard extends BaseGuard implements CanActivate, CanDeactivate<NovoComponent> {
+export class ProdutoGuard extends BaseGuard implements CanActivate, CanDeactivate<NovoComponent> {
 
-  constructor(protected override router: Router){ super(router); }
+    constructor(protected override router: Router){ super(router); }
 
     canDeactivate(component: NovoComponent) {
         if(component.mudancasNaoSalvas) {
@@ -17,6 +18,6 @@ export class FornececedorGuard extends BaseGuard implements CanActivate, CanDeac
     }
 
     canActivate(routeAc: ActivatedRouteSnapshot) {
-      return super.validarClaims(routeAc);
-  }
+        return super.validarClaims(routeAc);
+    }
 }
